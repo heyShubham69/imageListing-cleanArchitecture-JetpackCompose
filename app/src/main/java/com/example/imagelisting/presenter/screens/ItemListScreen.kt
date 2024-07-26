@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,6 +34,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.imagelisting.domain.model.Item
 import com.example.imagelisting.presenter.MainViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ItemListScreen(
@@ -43,15 +45,18 @@ fun ItemListScreen(
         mutableStateOf("")
     }
     val itemList by viewModel.items.observeAsState(emptyList())
-    LaunchedEffect(key1 = Unit) {
-        viewModel.setSearchItem(searchfeild.value)
+    val coroutineScope = rememberCoroutineScope()
 
-    }
     Column(modifier = Modifier.fillMaxSize()) {
         Text(text = "Item List")
         TextField(
             value = searchfeild.value,
-            onValueChange = { searchfeild.value = it },
+            onValueChange = {
+                searchfeild.value = it
+                coroutineScope.launch {
+                    viewModel.getDynamicItems(it)
+                }
+            },
             placeholder = { Text(text = "Search") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -62,7 +67,7 @@ fun ItemListScreen(
         LazyColumn {
             items(itemList) { item ->
                 ListItem(item) {
-                    navHostController.navigate("detail/${item.imdbID}")
+                    navHostController.navigate("details/${item.imdbID}")
                     Log.d("TAG", "ItemListScreen: ${item.imdbID}")
                 }
 

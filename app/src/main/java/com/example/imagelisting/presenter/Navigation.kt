@@ -9,14 +9,14 @@ import com.example.imagelisting.presenter.screens.ItemListScreen
 
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "home"){
-        composable("home"){
+    NavHost(navController = navController, startDestination = "list") {
+        composable("list") {
             ItemListScreen(navController)
         }
-        composable("details/{imdbId}"){
-            val imdbId = it.arguments?.getString("imdbId")
-            if(imdbId != null){
-                ItemDetailScreen( imdbId)
+        composable("details/{imdbId}") { backStackEntry ->
+            val imdbId = backStackEntry.arguments?.getString("imdbId")
+            if (imdbId != null) {
+                ItemDetailScreen(imdbId)
             }
         }
     }

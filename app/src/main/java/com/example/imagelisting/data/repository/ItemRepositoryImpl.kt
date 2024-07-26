@@ -1,10 +1,10 @@
 package com.example.imagelisting.data.repository
 
+import com.example.imagelisting.data.ItemDetail
 import com.example.imagelisting.data.SearchItem
-import com.example.imagelisting.data.itemData
 import com.example.imagelisting.data.remote.ApiService
-import com.example.imagelisting.di.AppModule
 import com.example.imagelisting.domain.model.Item
+import com.example.imagelisting.domain.model.ItemDetailModel
 import com.example.imagelisting.domain.repository.ItemRepository
 import javax.inject.Inject
 
@@ -28,6 +28,14 @@ class ItemRepositoryImpl @Inject constructor(
             emptyList()
         }    }
 
+    override suspend fun getMovieDetails(imdbId: String): ItemDetailModel? {
+        val response = apiService.getMovieDetails( imdbId)
+        return if (response.isSuccessful) {
+            response.body()?.toDomain()
+        } else {
+            null
+        }    }
+
     // Map SearchItem to Search
     private fun SearchItem.toDomain(): Item {
         return Item(
@@ -38,5 +46,14 @@ class ItemRepositoryImpl @Inject constructor(
             Year = Year
         )
 
+    }
+    private fun ItemDetail.toDomain():ItemDetailModel{
+        return ItemDetailModel(
+            imdbID = imdbID,
+            Title = Title,
+            Type = Type,
+            Poster = Poster,
+            Year = Year,
+        )
     }
 }
