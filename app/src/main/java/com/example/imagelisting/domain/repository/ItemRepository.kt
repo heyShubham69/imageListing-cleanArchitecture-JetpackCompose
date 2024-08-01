@@ -5,7 +5,6 @@ import com.example.imagelisting.domain.model.Item
 import com.example.imagelisting.domain.model.ItemDetailModel
 
 interface ItemRepository {
-    suspend fun getItems():List<Item>
     suspend fun getDynamicItems(item: String):List<Item>
 
     suspend fun getMovieDetails(imdbId: String): ItemDetailModel?

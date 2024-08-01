@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.imagelisting.domain.model.Item
 import com.example.imagelisting.domain.model.ItemDetailModel
 import com.example.imagelisting.domain.usecase.GetDynamicItemsUseCase
-import com.example.imagelisting.domain.usecase.GetItemsUseCase
 import com.example.imagelisting.domain.usecase.GetMovieDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getItemsUseCase: GetItemsUseCase,
     private val getDynamicItemsUseCase: GetDynamicItemsUseCase,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase
 ):ViewModel() {
@@ -37,7 +35,7 @@ class MainViewModel @Inject constructor(
         }
     }
     private suspend fun getItems() {
-        _items.value = getItemsUseCase()
+        _items.value = getDynamicItemsUseCase("titanic")
     }
 
     fun fetchMovieDetails(imdbId: String) {

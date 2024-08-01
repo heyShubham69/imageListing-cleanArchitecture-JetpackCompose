@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +39,7 @@ import com.example.imagelisting.domain.model.Item
 import com.example.imagelisting.presenter.MainViewModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemListScreen(
     navHostController: NavHostController,
@@ -46,33 +50,40 @@ fun ItemListScreen(
     }
     val itemList by viewModel.items.observeAsState(emptyList())
     val coroutineScope = rememberCoroutineScope()
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(text = "Item List") })
+        }
+    ) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(it)) {
+            TextField(
+                value = searchfeild.value,
+                onValueChange = {
+                    searchfeild.value = it
+                    coroutineScope.launch {
+                        viewModel.getDynamicItems(it)
+                    }
+                },
+                placeholder = { Text(text = "Search") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                singleLine = true
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(text = "Item List")
-        TextField(
-            value = searchfeild.value,
-            onValueChange = {
-                searchfeild.value = it
-                coroutineScope.launch {
-                    viewModel.getDynamicItems(it)
+            )
+            LazyColumn {
+                items(itemList) { item ->
+                    ListItem(item) {
+                        navHostController.navigate("details/${item.imdbID}")
+                        Log.d("TAG", "ItemListScreen: ${item.imdbID}")
+                    }
+
                 }
-            },
-            placeholder = { Text(text = "Search") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            singleLine = true
-
-        )
-        LazyColumn {
-            items(itemList) { item ->
-                ListItem(item) {
-                    navHostController.navigate("details/${item.imdbID}")
-                    Log.d("TAG", "ItemListScreen: ${item.imdbID}")
-                }
-
             }
         }
+
     }
 }
 

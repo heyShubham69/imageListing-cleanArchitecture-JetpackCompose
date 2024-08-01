@@ -1,6 +1,7 @@
 package com.example.imagelisting.presenter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,7 +17,7 @@ fun Navigation(navController: NavHostController) {
         composable("details/{imdbId}") { backStackEntry ->
             val imdbId = backStackEntry.arguments?.getString("imdbId")
             if (imdbId != null) {
-                ItemDetailScreen(imdbId)
+                ItemDetailScreen(imdbId,navController)
             }
         }
     }

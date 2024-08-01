@@ -11,15 +11,6 @@ import javax.inject.Inject
 class ItemRepositoryImpl @Inject constructor(
     private val apiService: ApiService
 ): ItemRepository {
-    override suspend fun getItems(): List<Item> {
-        val response = apiService.getItems()
-        return if (response.isSuccessful){
-            response.body()?.Search ?.map { it.toDomain() } ?: emptyList()
-        }else{
-            emptyList()
-        }
-    }
-
     override suspend fun getDynamicItems(item: String): List<Item> {
         val response = apiService.getDynamicItems(item)
         return if (response.isSuccessful){
